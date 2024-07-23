@@ -5,6 +5,12 @@ using libfintx.FinTS.Data;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews();
+
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5000); // Setzen Sie den gewünschten Port hier
+});
 var app = builder.Build();
 
 
@@ -29,7 +35,8 @@ async Task<string> GetTransactions(LoginData loginData)
         var startDate = DateTime.Parse(loginData.startDate);
         var endDate = DateTime.Parse(loginData.endDate);
         // var transactions = await client.Transactions_camtNxt(new TANDialog(WaitForTanAsync), CamtVersion.Camt052, startDate, endDate);
-        var transactions = await client.Transactions(new TANDialog(WaitForTanAsync), startDate, endDate);
+        // var transactions = await client.Transactions(new TANDialog(WaitForTanAsync), startDate, endDate);
+        var transactions = await client.Transactions_camt(new TANDialog(WaitForTanAsync), CamtVersion.Camt052, startDate, endDate);
         return transactions.RawData;
     }
     catch (Exception err)
